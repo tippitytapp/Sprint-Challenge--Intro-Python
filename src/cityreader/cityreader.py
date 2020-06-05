@@ -71,28 +71,54 @@ for c in cities:
 
 # TODO Get latitude and longitude values from the user
 
-def getcoords():   
-    global lat_lon 
-    latlon1 = input('Enter your first lat, lon pair:  ')
-    latlon2 = input('Enter your second lat, long pair:  ')
-    lat_lon1 = latlon1.split(',')
-    lat_lon1.extend(latlon2.split(','))
-    lat_lon = [int(value) for value in lat_lon1]
-    return lat_lon
+# def getcoords():   
+#     global lat_lon 
+#     latlon1 = input('Enter your first lat, lon pair:  ')
+#     latlon2 = input('Enter your second lat, long pair:  ')
+#     lat_lon1 = latlon1.split(',')
+#     lat_lon1.extend(latlon2.split(','))
+#     lat_lon = [int(value) for value in lat_lon1]
+#     return lat_lon
 
-getcoords()
+# getcoords()
+
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
-  # within will hold the cities that fall within the specified region
+    # within will hold the cities that fall within the specified region
     within = []
-    for city in cities:
-        if city.lat in range(lat1,lat2) and city.lon in range(lon1,lon2):
-            within.append(city)
-    return within
-    
-  # TODO Ensure that the lat and lon valuse are all floats
-  # Go through each city and check to see if it falls within 
-  # the specified coordinates.
-    # return within
+    # TODO Ensure that the lat and lon valuse are all floats
+    # Go through each city and check to see if it falls within
+    # the specified coordinates.
+    lats = sorted([lat1, lat2])
+    lons = sorted([lon1, lon2], reverse=True)
 
-cityreader_stretch(lat_lon[0], lat_lon[1], lat_lon[2], lat_lon[3])
+    def latit(x):
+        return x.lat > lats[0] and x.lat < lats[1]
+
+    def longit(x):
+        return x.lon < lons[0] and x.lon > lons[1]
+
+    within = [c for c in cities if latit(c) and longit(c)]
+    return within
+
+
+while True:
+    try:
+        x, y = [float(x) for x in input("Enter first lat long pair:").split(",")]
+        coords1 = sorted([x, y], reverse=True)
+        coords1 = tuple(coords1)
+        try:
+            x1, y1 = [float(x1) for x1 in input("Enter second lat lon pair:").split(",")]
+            coords2 = sorted([x1, y1], reverse=True)
+            coords2 = tuple(coords2)
+            coords = coords1 + coords2
+            lat1, lon1, lat2, lon2 = coords
+            results = cityreader_stretch(*coords, cities=cities)
+            print(results)
+            print()
+            break
+        except ValueError:
+            print("error! not valid lat long coors")
+        break
+    except ValueError:
+        print("error! not valid lat long coors")
