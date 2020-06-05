@@ -114,11 +114,13 @@ while True:
             coords = coords1 + coords2
             lat1, lon1, lat2, lon2 = coords
             results = cityreader_stretch(*coords, cities=cities)
-            print(results)
             print()
-            break
+            print()
+            print(" ===== ===== ===== RESULTS ===== ===== ===== ")
+            for city in results:
+                print(city)
+            print()
         except ValueError:
             print("error! not valid lat long coors")
-        break
     except ValueError:
         print("error! not valid lat long coors")
