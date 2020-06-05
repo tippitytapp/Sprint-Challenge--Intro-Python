@@ -1,5 +1,6 @@
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
+
 class City:
     def __init__(self, name, lat, lon):
         self.name = name
@@ -69,21 +70,29 @@ for c in cities:
 # Salt Lake City: (40.7774,-111.9301)
 
 # TODO Get latitude and longitude values from the user
-def getcoords():    
+
+def getcoords():   
+    global lat_lon 
     latlon1 = input('Enter your first lat, lon pair:  ')
     latlon2 = input('Enter your second lat, long pair:  ')
     lat_lon1 = latlon1.split(',')
     lat_lon1.extend(latlon2.split(','))
-    lat_lon = [float(value) for value in lat_lon1]
-    print(lat_lon)
+    lat_lon = [int(value) for value in lat_lon1]
+    return lat_lon
 
 getcoords()
+
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
   # within will hold the cities that fall within the specified region
-  within = []
-
+    within = []
+    for city in cities:
+        if city.lat in range(lat1,lat2) and city.lon in range(lon1,lon2):
+            within.append(city)
+    return within
+    
   # TODO Ensure that the lat and lon valuse are all floats
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
+    # return within
 
-  return within
+cityreader_stretch(lat_lon[0], lat_lon[1], lat_lon[2], lat_lon[3])
