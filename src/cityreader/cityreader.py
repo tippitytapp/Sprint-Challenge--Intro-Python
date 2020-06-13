@@ -1,6 +1,13 @@
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
 
+class City:
+    def __init__(self, name, lat, lon):
+        self.name = name
+        self.lat = lat
+        self.lon = lon
+    def __str__(self):
+      return f'{self.name}, {self.lat}, {self.lon}'
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -15,12 +22,16 @@
 # Note that the first line of the CSV is header that describes the fields--this
 # should not be loaded into a City object.
 cities = []
-
+import csv
 def cityreader(cities=[]):
   # TODO Implement the functionality to read from the 'cities.csv' file
   # For each city record, create a new City instance and add it to the 
   # `cities` list
-    
+    with open('cities.csv') as cityreader:
+        city_file = csv.DictReader(cityreader)
+        for row in city_file:
+            city = City(str(row['city']), float(row['lat']), float(row['lng']))
+            cities.append(city)
     return cities
 
 cityreader(cities)
@@ -60,12 +71,56 @@ for c in cities:
 
 # TODO Get latitude and longitude values from the user
 
+# def getcoords():   
+#     global lat_lon 
+#     latlon1 = input('Enter your first lat, lon pair:  ')
+#     latlon2 = input('Enter your second lat, long pair:  ')
+#     lat_lon1 = latlon1.split(',')
+#     lat_lon1.extend(latlon2.split(','))
+#     lat_lon = [int(value) for value in lat_lon1]
+#     return lat_lon
+
+# getcoords()
+
+
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
-  # within will hold the cities that fall within the specified region
-  within = []
+    # within will hold the cities that fall within the specified region
+    within = []
+    # TODO Ensure that the lat and lon valuse are all floats
+    # Go through each city and check to see if it falls within
+    # the specified coordinates.
+    lats = sorted([lat1, lat2])
+    lons = sorted([lon1, lon2], reverse=True)
 
-  # TODO Ensure that the lat and lon valuse are all floats
-  # Go through each city and check to see if it falls within 
-  # the specified coordinates.
+    def latit(x):
+        return x.lat > lats[0] and x.lat < lats[1]
 
-  return within
+    def longit(x):
+        return x.lon < lons[0] and x.lon > lons[1]
+
+    within = [c for c in cities if latit(c) and longit(c)]
+    return within
+
+
+while True:
+    try:
+        x, y = [float(x) for x in input("Enter first lat long pair:").split(",")]
+        coords1 = sorted([x, y], reverse=True)
+        coords1 = tuple(coords1)
+        try:
+            x1, y1 = [float(x1) for x1 in input("Enter second lat lon pair:").split(",")]
+            coords2 = sorted([x1, y1], reverse=True)
+            coords2 = tuple(coords2)
+            coords = coords1 + coords2
+            lat1, lon1, lat2, lon2 = coords
+            results = cityreader_stretch(*coords, cities=cities)
+            print()
+            print()
+            print(" ===== ===== ===== RESULTS ===== ===== ===== ")
+            for city in results:
+                print(city)
+            print()
+        except ValueError:
+            print("error! not valid lat long coors")
+    except ValueError:
+        print("error! not valid lat long coors")
